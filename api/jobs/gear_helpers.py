@@ -4,7 +4,7 @@ Gears
 
 # import jsonschema
 from jsonschema import Draft4Validator
-import gear_tools
+import gears
 
 from .. import config
 from .jobs import Job
@@ -40,7 +40,7 @@ def get_gear_by_name(name):
     return gear_doc
 
 def get_invocation_schema(gear):
-    return gear_tools.derive_invocation_schema(gear['manifest'])
+    return gears.derive_invocation_schema(gear['manifest'])
 
 def suggest_container(gear, cont_name, cid):
     """
@@ -52,7 +52,7 @@ def suggest_container(gear, cont_name, cid):
 
     schemas = {}
     for x in gear['manifest']['inputs']:
-        schema = gear_tools.isolate_file_invocation(invocation_schema, x)
+        schema = gears.isolate_file_invocation(invocation_schema, x)
         schemas[x] = Draft4Validator(schema)
 
     # It would be nice to have use a visitor here instead of manual key loops.
@@ -74,7 +74,7 @@ def suggest_container(gear, cont_name, cid):
     return root
 
 def insert_gear(doc):
-    gear_tools.validate_manifest(doc['manifest'])
+    gears.validate_manifest(doc['manifest'])
 
     config.db.gears.insert(doc)
 
@@ -99,7 +99,7 @@ def remove_gear(name):
     config.db.gears.remove({"name": name})
 
 def upsert_gear(doc):
-    gear_tools.validate_manifest(doc['manifest'])
+    gears.validate_manifest(doc['manifest'])
 
     remove_gear(doc['name'])
     insert_gear(doc)

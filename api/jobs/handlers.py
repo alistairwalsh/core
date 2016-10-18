@@ -4,14 +4,14 @@ API request handlers for the jobs module
 
 import json
 import StringIO
-import gear_tools
+import gears
 from jsonschema import Draft4Validator, ValidationError
 
 from ..dao.containerutil import create_filereference_from_dictionary, create_containerreference_from_dictionary, create_containerreference_from_filereference, ContainerReference
 from .. import base
 from .. import config
 
-from .gears import get_gears, get_gear_by_name, get_invocation_schema, remove_gear, upsert_gear, suggest_container
+from .gear_helpers import get_gears, get_gear_by_name, get_invocation_schema, remove_gear, upsert_gear, suggest_container
 from .jobs import Job
 from .queue import Queue
 
@@ -166,8 +166,8 @@ class JobsHandler(base.RequestHandler):
         gear = get_gear_by_name(gear_name)
         if len(gear.get('manifest', {}).get('config', {})) > 0:
 
-            invocation = gear_tools.derive_invocation_schema(gear['manifest'])
-            ci = gear_tools.isolate_config_invocation(invocation)
+            invocation = gears.derive_invocation_schema(gear['manifest'])
+            ci = gears.isolate_config_invocation(invocation)
             validator = Draft4Validator(ci)
 
             try:
